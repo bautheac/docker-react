@@ -5,6 +5,19 @@ services:
 
 before_install:
     - docker build -t bautheac/docker-react -f Dockerfile.dev .
-    
+
 script:
-    - docker run bautheac/docker-react npm run test -- --coverage
+    - docker run -e CI=true bautheac/docker-react npm run test
+    
+deploy:
+    provider: elasticbeanstalk
+    region: eu-west-2
+    app: "docker-react"
+    env: "DockerReact-env"
+    bucket_name: "elasticbeanstalk-eu-west-2-110067610908"
+    bucket_path: "docker-react"
+    on: 
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: 
+        secure: "$AWS_SECRET_KEY"
